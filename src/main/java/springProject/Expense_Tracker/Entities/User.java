@@ -18,6 +18,9 @@ public class User {
     @Column(nullable = false,unique = true,name = "user_name")
     private String username;
 
+    @Column(nullable = false,name="password")
+    private String password;
+
     @OneToOne
     @JoinColumn(name="income_id",referencedColumnName = "id")
     private Income incomeId;
