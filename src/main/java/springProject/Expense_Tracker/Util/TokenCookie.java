@@ -6,6 +6,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-public class TokenFormation {
+public class TokenCookie {
     @Value("${jwt.secret}")
     private String secret_key;
 
@@ -34,6 +36,16 @@ public class TokenFormation {
     }
     public Claims getClaims(String token){
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+    public void createCookie(String token, HttpServletResponse response){
+        Cookie cookie=new Cookie("auth_for_exp_track",token);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(60 * 60 * 10);
+        response.addCookie(cookie);
+    }
+
+    public boolean isValidCookie(String cookie){
+        return validateToken(cookie);
     }
 
     public String generateToken(String id){

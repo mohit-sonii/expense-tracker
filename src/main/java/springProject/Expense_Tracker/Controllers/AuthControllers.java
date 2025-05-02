@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import springProject.Expense_Tracker.Entities.User;
 import springProject.Expense_Tracker.POJO.SignUpLoginPOJO;
 import springProject.Expense_Tracker.Service.UserService;
-import springProject.Expense_Tracker.Util.TokenFormation;
+import springProject.Expense_Tracker.Util.TokenCookie;
 
 import java.util.Optional;
 
@@ -19,15 +19,15 @@ public class AuthControllers {
     private UserService userService;
 
     @Autowired
-    private TokenFormation tokenFormation;
+    private TokenCookie tokenCookie;
 
 
     //Navigate User to main page after login and signup
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody SignUpLoginPOJO data,@CookieValue(value = "authentication",defaultValue = "") String cookie_value,HttpServletResponse response){
+    public ResponseEntity<String> signUp(@RequestBody SignUpLoginPOJO data,@CookieValue(value = "auth_for_exp_track",defaultValue = "") String cookie_value,HttpServletResponse response){
         try{
-            if(!cookie_value.isEmpty() && userService.isValidCookie(cookie_value)){
+            if(!cookie_value.isEmpty() && tokenCookie.isValidCookie(cookie_value)){
                 return new ResponseEntity<>("User Logged In With Cookie",HttpStatus.OK);
             }
             Optional<User> result = userService.findUser(data.getUsername());
@@ -42,8 +42,8 @@ public class AuthControllers {
             user.setPassword(data.getPassword());
             try{
                 userService.saveUser(user);
-                String token  = tokenFormation.generateToken(user.getId().toString());
-                userService.createCookie(token,response);
+                String token  = tokenCookie.generateToken(user.getId().toString());
+                tokenCookie.createCookie(token,response);
                 return new ResponseEntity<>("User Created Successfully !!",HttpStatus.CREATED);
             }catch(Exception e){
                 return new ResponseEntity<>("Error while saving the user, Please try again !!",HttpStatus.BAD_REQUEST);
@@ -54,10 +54,10 @@ public class AuthControllers {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody SignUpLoginPOJO data, HttpServletResponse response, @CookieValue(value = "authentication", defaultValue = "") String cookie_value){
+    public ResponseEntity<String> login(@RequestBody SignUpLoginPOJO data, HttpServletResponse response, @CookieValue(value = "auth_for_exp_track", defaultValue = "") String cookie_value){
         try{
             if(!cookie_value.isEmpty()){
-                if(userService.isValidCookie(cookie_value)){
+                if(tokenCookie.isValidCookie(cookie_value)){
                     return  new ResponseEntity<>("User is Authenticated",HttpStatus.OK);
                 }
             }
@@ -73,8 +73,8 @@ public class AuthControllers {
                 return new ResponseEntity<>("User does not exists !!",HttpStatus.NO_CONTENT);
             }
             if(userService.validatePassword(data.getPassword(),user.get().getPassword())){
-                String token = tokenFormation.generateToken(user.get().getId().toString());
-                userService.createCookie(token,response);
+                String token = tokenCookie.generateToken(user.get().getId().toString());
+                tokenCookie.createCookie(token,response);
                 return new ResponseEntity<>("User logged in "+ token,HttpStatus.OK);
             }else{
                 return new ResponseEntity<>("Either username or password is incorrect",HttpStatus.BAD_REQUEST);
