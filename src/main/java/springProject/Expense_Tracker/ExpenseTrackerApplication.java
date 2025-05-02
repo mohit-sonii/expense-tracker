@@ -2,7 +2,6 @@ package springProject.Expense_Tracker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import java.sql.*;
 
 @SpringBootApplication
 public class ExpenseTrackerApplication {
