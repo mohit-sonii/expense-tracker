@@ -41,15 +41,17 @@ public class TokenCookie {
         Cookie cookie=new Cookie("auth_for_exp_track",token);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(60 * 60 * 10);
+        cookie.setSecure(false);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 
     public boolean isValidCookie(String cookie){
         return validateToken(cookie);
     }
-
-    public String generateToken(String id){
-        return  Jwts.builder().setSubject(id)
+    public String generateToken(String id,String username){
+        String combineString = id+" : "+username;
+        return  Jwts.builder().setSubject(combineString)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))  // 10 hours
                 .signWith(key,SignatureAlgorithm.HS256)

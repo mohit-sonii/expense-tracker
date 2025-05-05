@@ -1,8 +1,6 @@
 package springProject.Expense_Tracker.POJO;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter

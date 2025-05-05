@@ -27,10 +27,11 @@ public class AuthControllers {
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpLoginPOJO data,@CookieValue(value = "auth_for_exp_track",defaultValue = "") String cookie_value,HttpServletResponse response){
         try{
-            if(!cookie_value.isEmpty() && tokenCookie.isValidCookie(cookie_value)){
+            Optional<User> result = userService.findUser(data.getUsername());
+            if(!cookie_value.isEmpty() && tokenCookie.isValidCookie(cookie_value) && (!result.isEmpty())){
+
                 return new ResponseEntity<>("User Logged In With Cookie",HttpStatus.OK);
             }
-            Optional<User> result = userService.findUser(data.getUsername());
             if(result.isPresent()){
                 return new ResponseEntity<>("User Already Exists !!", HttpStatus.FORBIDDEN);
             }
@@ -42,7 +43,7 @@ public class AuthControllers {
             user.setPassword(data.getPassword());
             try{
                 userService.saveUser(user);
-                String token  = tokenCookie.generateToken(user.getId().toString());
+                String token  = tokenCookie.generateToken(user.getUser_id().toString(),user.getUsername());
                 tokenCookie.createCookie(token,response);
                 return new ResponseEntity<>("User Created Successfully !!",HttpStatus.CREATED);
             }catch(Exception e){
@@ -56,6 +57,10 @@ public class AuthControllers {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody SignUpLoginPOJO data, HttpServletResponse response, @CookieValue(value = "auth_for_exp_track", defaultValue = "") String cookie_value){
         try{
+            Optional<User> user = userService.findUser(data.getUsername());
+            if(user.isEmpty()){
+                return new ResponseEntity<>("User not found !!",HttpStatus.NOT_FOUND);
+            }
             if(!cookie_value.isEmpty()){
                 if(tokenCookie.isValidCookie(cookie_value)){
                     return  new ResponseEntity<>("User is Authenticated",HttpStatus.OK);
@@ -68,12 +73,8 @@ public class AuthControllers {
                 return new ResponseEntity<>("Password cannot be empty",HttpStatus.BAD_REQUEST);
             }
 
-            Optional<User> user = userService.findUser(data.getUsername());
-            if(user.isEmpty()){
-                return new ResponseEntity<>("User does not exists !!",HttpStatus.NO_CONTENT);
-            }
             if(userService.validatePassword(data.getPassword(),user.get().getPassword())){
-                String token = tokenCookie.generateToken(user.get().getId().toString());
+                String token = tokenCookie.generateToken(user.get().getUser_id().toString(),user.get().getUsername());
                 tokenCookie.createCookie(token,response);
                 return new ResponseEntity<>("User logged in "+ token,HttpStatus.OK);
             }else{

@@ -15,7 +15,7 @@ public class Expense {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.AUTO)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID exp_id;
 
     @Column(name="category",nullable=false)
     private String category;
@@ -28,4 +28,8 @@ public class Expense {
 
     @Column(name="expense_date",nullable=false)
     private String expenseDate;
+
+    @ManyToOne
+    @JoinColumn(name="user_id",nullable = false)
+    private User user;
 }

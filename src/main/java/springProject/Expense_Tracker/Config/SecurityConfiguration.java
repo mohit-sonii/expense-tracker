@@ -22,14 +22,15 @@ public class SecurityConfiguration {
     public SecurityConfiguration (CookieAuthFilter cookieAuthentication){
         this.cookieAuthFilter=cookieAuthentication;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf-> csrf.disable())
                 .authorizeHttpRequests(
                         auth->auth
-                                .requestMatchers("/join/**").permitAll()
-                        .requestMatchers("/c/**").authenticated())
+                        .requestMatchers("/c/**").authenticated()
+                                .requestMatchers("/join/**").permitAll())
                 .addFilterBefore(cookieAuthFilter, BasicAuthenticationFilter.class);
         return http.build();
     }

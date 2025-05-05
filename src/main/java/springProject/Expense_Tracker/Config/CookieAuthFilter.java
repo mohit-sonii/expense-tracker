@@ -1,5 +1,6 @@
 package springProject.Expense_Tracker.Config;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -30,7 +31,7 @@ public class CookieAuthFilter extends OncePerRequestFilter {
             return;
         }
         Cookie[] cookie = request.getCookies();
-        boolean found=false;
+        boolean foundCookie = false;
         if(cookie!=null){
             for(Cookie item:cookie){
                 if("auth_for_exp_track".equals(item.getName())){
@@ -38,18 +39,19 @@ public class CookieAuthFilter extends OncePerRequestFilter {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN);
                         return;
                     }
-                    found=true;
+                    Claims claims = tokenCookie.getClaims(item.getValue());
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(claims.getSubject(), null, Collections.singleton(new SimpleGrantedAuthority("USER")));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    foundCookie=true;
+                    break;
                 }
             }
         }
-        if(found){
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken("user", null, Collections.singleton(new SimpleGrantedAuthority("USER")));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(request,response);
+        if(!foundCookie && request.getRequestURI().startsWith("/c")){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        response.sendError(HttpServletResponse.SC_FORBIDDEN);
-        return;
+        filterChain.doFilter(request,response);
     }
 }
