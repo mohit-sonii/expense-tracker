@@ -10,9 +10,7 @@ import springProject.Expense_Tracker.Repository.ExpenseRepo;
 import springProject.Expense_Tracker.Repository.UserRepo;
 
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class ExpenseService {
@@ -31,6 +29,30 @@ public class ExpenseService {
             return new ResponseEntity<>("Expense Added Successfully ",HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>("Unexpected Server Error "+ e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    public record ExpenseDTO(
+            UUID id,
+            String category,
+            long expenseAmount,
+            String description,
+            String expenseDate,
+            String paymentType
+    ){}
+    public List<ExpenseDTO> getExpenses(UUID id){
+        try{
+            User user = userRepo.findById(id).orElseThrow();
+            return user.getExpenseIds().stream().map(e->new ExpenseDTO(
+                    e.getExp_id(),
+                    e.getCategory(),
+                    e.getXpense(),
+                    e.getDescription(),
+                    e.getExpenseDate(),
+                    e.getPaymentType()
+            )).toList();
+
+        }catch(Exception e){
+            throw new Error("Internal Server Error");
         }
     }
 }

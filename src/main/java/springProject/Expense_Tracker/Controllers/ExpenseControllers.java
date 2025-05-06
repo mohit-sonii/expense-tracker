@@ -6,14 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springProject.Expense_Tracker.Entities.Expense;
 import springProject.Expense_Tracker.Service.ExpenseService;
-
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/c/ex/{id}")
 public class ExpenseControllers {
     @Autowired private ExpenseService expenseService;
-
 
     @GetMapping
     public ResponseEntity<String> check(){
@@ -24,7 +22,17 @@ public class ExpenseControllers {
         if(data==null){
             return new ResponseEntity<>("Please Provide enough data",HttpStatus.BAD_REQUEST);
         }
-
         return expenseService.saveExpense(data,id);
+    }
+
+    @GetMapping("/get-expenses")
+    public ResponseEntity<?> getExpenseList(@PathVariable UUID id){
+        try{
+            List<ExpenseService.ExpenseDTO> result = expenseService.getExpenses(id);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Internal Server Error" + e,
+                    HttpStatus.NOT_FOUND);
+        }
     }
 }

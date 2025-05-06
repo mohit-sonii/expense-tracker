@@ -29,6 +29,9 @@ public class Expense {
     @Column(name="expense_date",nullable=false)
     private String expenseDate;
 
+    @Column (name="payment_type",nullable = false)
+    private String paymentType;
+
     @ManyToOne
     @JoinColumn(name="user_id",nullable = false)
     private User user;
