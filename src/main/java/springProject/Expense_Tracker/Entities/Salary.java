@@ -1,5 +1,6 @@
 package springProject.Expense_Tracker.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +28,6 @@ public  class Salary{
 
     @ManyToOne
     @JoinColumn(name="income_id",nullable = false)
+    @JsonIgnore
     private Income income;
 }

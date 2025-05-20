@@ -1,5 +1,6 @@
 package springProject.Expense_Tracker.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class Income {
 
     @OneToOne
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "income", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -10,6 +10,7 @@ import springProject.Expense_Tracker.Entities.User;
 import springProject.Expense_Tracker.Repository.UserRepo;
 import springProject.Expense_Tracker.Service.SalaryService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,6 +37,21 @@ public class SalaryController {
                 }
         } catch (Exception e) {
             return new ResponseEntity<>("Internal Server Error" + e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<?> get_salary(@PathVariable UUID id){
+        try{
+            User user = userRepo.findById(id).orElse(null);
+            if(user==null)return new ResponseEntity<>("User not found",HttpStatus.NOT_FOUND);
+            Income income = user.getIncome();
+            if(income==null)return new ResponseEntity<>("No Record Found",HttpStatus.NOT_FOUND);
+            List<Salary> salaryList = income.getSalary();
+            if(salaryList.isEmpty())return new ResponseEntity<>("No Salary Record", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(salaryList,HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Internal Server Error "+e,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

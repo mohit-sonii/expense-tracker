@@ -1,5 +1,6 @@
 package springProject.Expense_Tracker.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.UuidGenerator;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -37,5 +38,6 @@ public class Expense {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id",nullable = false)
+    @JsonIgnore
     private User user;
 }

@@ -1,5 +1,6 @@
 package springProject.Expense_Tracker.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class Balance {
     private double balAmount=0;
 
     @OneToOne(mappedBy = "balance")
+    @JsonIgnore
     private User user;
 
 }
