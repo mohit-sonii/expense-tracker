@@ -32,7 +32,10 @@ public class Expense {
     @Column (name="payment_type",nullable = false)
     private String paymentType;
 
-    @ManyToOne
+    @Column (name="aval_balance")
+    private double balanceLeft;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id",nullable = false)
     private User user;
 }

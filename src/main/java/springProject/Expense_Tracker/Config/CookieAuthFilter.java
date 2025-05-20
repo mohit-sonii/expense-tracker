@@ -41,7 +41,7 @@ public class CookieAuthFilter extends OncePerRequestFilter {
                     }
                     Claims claims = tokenCookie.getClaims(item.getValue());
                     UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(claims.getSubject(), null, Collections.singleton(new SimpleGrantedAuthority("USER")));
+                            new UsernamePasswordAuthenticationToken(claims.getSubject(), claims.getSubject(), Collections.singleton(new SimpleGrantedAuthority("USER")));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     foundCookie=true;
                     break;

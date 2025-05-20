@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Investment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID invest_id;
 
     @Column(name="name",nullable = false)
     private String investmentName;
@@ -23,7 +23,7 @@ public class Investment {
     @Column(name="purchased_on",nullable = false)
     private String purchaseDate;
 
-    @Column(name="sold_on",nullable = false)
+    @Column(name="sold_on")
     private String SoldDate;
 
     @Column(name="type",nullable = false)
@@ -34,4 +34,9 @@ public class Investment {
 
     @Column(name="description",nullable = false)
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "income_id", nullable = false)
+    private Income income;
+
 }

@@ -1,25 +1,32 @@
 package springProject.Expense_Tracker.Entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name="incomes")
+@Table(name = "incomes")
+@Getter
+@Setter
+
 public class Income {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID income_id;
 
-    // it will be monthly and will addition of salary + investment return - expense
-    private long total_income;
-
-    @OneToOne
-    @JoinColumn(name="salary_id",referencedColumnName = "id")
-    private Salary salary;
+    @Column(name = "total_incomes", nullable = false)
+    private double total_income=0;
 
     @OneToOne
-    @JoinColumn(name="investment_id",referencedColumnName = "id")
-    private Investment investment;
+    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    private User user;
 
+    @OneToMany(mappedBy = "income", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Salary> salary;
+
+    @OneToMany(mappedBy = "income", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Investment> investment;
 }

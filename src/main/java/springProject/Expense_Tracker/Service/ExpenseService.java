@@ -3,7 +3,7 @@ package springProject.Expense_Tracker.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import springProject.Expense_Tracker.Entities.Expense;
 import springProject.Expense_Tracker.Entities.User;
 import springProject.Expense_Tracker.Repository.ExpenseRepo;
@@ -12,7 +12,7 @@ import springProject.Expense_Tracker.Repository.UserRepo;
 
 import java.util.*;
 
-@Component
+@Service
 public class ExpenseService {
     @Autowired
     private ExpenseRepo expenseRepo;
@@ -24,7 +24,7 @@ public class ExpenseService {
         try{
             User foundUser = userRepo.findById(id).orElseThrow();
             data.setUser(foundUser);
-            foundUser.getExpenseIds().add(data);
+            foundUser.getExpenses().add(data);
             userRepo.save(foundUser);
             return new ResponseEntity<>("Expense Added Successfully ",HttpStatus.OK);
         }catch(Exception e){
@@ -37,18 +37,20 @@ public class ExpenseService {
             long expenseAmount,
             String description,
             String expenseDate,
-            String paymentType
+            String paymentType,
+            double balance_left
     ){}
     public List<ExpenseDTO> getExpenses(UUID id){
         try{
             User user = userRepo.findById(id).orElseThrow();
-            return user.getExpenseIds().stream().map(e->new ExpenseDTO(
+            return user.getExpenses().stream().map(e->new ExpenseDTO(
                     e.getExp_id(),
                     e.getCategory(),
                     e.getXpense(),
                     e.getDescription(),
                     e.getExpenseDate(),
-                    e.getPaymentType()
+                    e.getPaymentType(),
+                    e.getBalanceLeft()
             )).toList();
 
         }catch(Exception e){

@@ -21,6 +21,7 @@ public class TokenCookie {
     private String secret_key;
 
     private SecretKey key;
+    
     @PostConstruct
     public void initKey(){
         key= Keys.hmacShaKeyFor(secret_key.getBytes(StandardCharsets.UTF_8));

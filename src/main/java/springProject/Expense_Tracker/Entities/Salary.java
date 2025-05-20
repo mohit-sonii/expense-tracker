@@ -13,7 +13,7 @@ import java.util.UUID;
 public  class Salary{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID sal_id;
     @Column(name = "base_pay")
     private long basePay;
     @Column(name = "bonus")
@@ -24,4 +24,8 @@ public  class Salary{
     private String companyName;
     @Column(name = "description")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name="income_id",nullable = false)
+    private Income income;
 }
