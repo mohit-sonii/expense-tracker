@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springProject.Expense_Tracker.Entities.User;
 import springProject.Expense_Tracker.Service.BalanceService;
+import springProject.Expense_Tracker.Service.UserService;
 
 import java.util.UUID;
 
@@ -17,18 +18,16 @@ import java.util.UUID;
 public class BalanceControllers {
 
     @Autowired
-    private BalanceService balanceService;
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<?> getBalance(@RequestParam(value = "user_id")String id){
         // find the user -> get the balance amount
         UUID user_id = UUID.fromString(id);
-        User user = balanceService.findUserById(user_id).getBody();
+        User user = userService.findUserById(user_id);
         if(user==null){
             return new ResponseEntity<>("User not found",HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(user.getBalance().getBalAmount(), HttpStatus.OK);
-
-
     }
 }

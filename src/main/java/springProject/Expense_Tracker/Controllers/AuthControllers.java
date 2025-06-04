@@ -21,15 +21,13 @@ public class AuthControllers {
     @Autowired
     private TokenCookie tokenCookie;
 
-
-    //Navigate User to main page after login and signup
+// TODO: make different route for validating the username, and email
 
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpLoginPOJO data,@CookieValue(value = "auth_for_exp_track",defaultValue = "") String cookie_value,HttpServletResponse response){
         try{
             Optional<User> result = userService.findUser(data.getUsername());
-            if(!cookie_value.isEmpty() && tokenCookie.isValidCookie(cookie_value) && (!result.isEmpty())){
-
+            if(!cookie_value.isEmpty() && tokenCookie.isValidCookie(cookie_value) && (result.isPresent())){
                 return new ResponseEntity<>("User Logged In With Cookie",HttpStatus.OK);
             }
             if(result.isPresent()){

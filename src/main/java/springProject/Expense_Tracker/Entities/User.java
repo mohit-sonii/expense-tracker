@@ -1,6 +1,7 @@
 package springProject.Expense_Tracker.Entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.engine.internal.Cascade;

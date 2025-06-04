@@ -29,7 +29,6 @@ public class SalaryService {
     @Autowired
     private BalanceRepo balanceRepo;
 
-
     public ResponseEntity<String> addIfFirst(User user, Salary salary) {
         try {
             Income incomeEntity = new Income();

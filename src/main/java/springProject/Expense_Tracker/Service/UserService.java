@@ -39,6 +39,15 @@ public class UserService  {
         }catch(Exception e){
             return Optional.empty();
         }
-        
     }
+
+    public User findUserById(UUID id){
+        try{
+            return userRepo.findById(id).orElse(null);
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+
 }
