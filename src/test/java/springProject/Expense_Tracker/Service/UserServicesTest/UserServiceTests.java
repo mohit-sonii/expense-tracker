@@ -32,7 +32,6 @@ public class UserServiceTests {
     @ParameterizedTest
     @ArgumentsSource(UserArguments.class)
     public void testFindByUsername(String username){
-
        if(username.equals("sunita")){
            UserBuilder dummy = new UserBuilder();
            dummy.setDummyUsername("mohit");

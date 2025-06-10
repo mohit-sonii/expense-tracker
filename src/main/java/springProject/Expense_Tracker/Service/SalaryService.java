@@ -61,7 +61,6 @@ public class SalaryService {
 
     public ResponseEntity<String> addIfDont(User user, Salary salary, Income income) {
         try {
-
             double total_salary = salary.getBasePay() + salary.getBonus();
 
             Balance balance = user.getBalance();

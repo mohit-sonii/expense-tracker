@@ -20,7 +20,7 @@ public  class Salary{
     @Column(name = "bonus")
     private long bonus;
     @Column(name = "salary_date")
-    private String salaryDate;
+    private String salaryDate; // MM-DD-YY
     @Column(name = "company_name")
     private String companyName;
     @Column(name = "description")
